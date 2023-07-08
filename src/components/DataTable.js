@@ -5,6 +5,14 @@ const DataTable = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    username: '',
+    address: '',
+    phone: '',
+  });
 
   useEffect(() => {
     fetchData();
@@ -39,8 +47,114 @@ const DataTable = () => {
     setFilteredData(updatedData);
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setFormData({
+      name: '',
+      email: '',
+      username: '',
+      address: '',
+      phone: '',
+    });
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Perform form validation here
+    // ...
+
+    // Add the new row to the table
+    const newRow = {
+      id: Date.now(),
+      first_name: formData.name,
+      email: formData.email,
+      username: formData.username,
+      address: formData.address,
+      phone: formData.phone,
+    };
+    setFilteredData((prevData) => [...prevData, newRow]);
+    handleCloseModal();
+  };
+
   return (
     <div>
+      <button onClick={handleOpenModal}>Dodaj novi redak</button>
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <h2>Unesite podatke</h2>
+            <form onSubmit={handleFormSubmit}>
+              <label>
+                Ime:
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Korisničko ime:
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Adresa:
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Telefon:
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <button type="submit">Spremi</button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <input type="text" placeholder="Pretraži po imenu" value={searchTerm} onChange={handleSearch} />
 
       <table>
