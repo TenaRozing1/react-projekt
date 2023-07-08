@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./DataTable.css";
 
 const DataTable = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    username: '',
-    address: '',
-    phone: '',
+    name: "",
+    email: "",
+    username: "",
   });
 
   useEffect(() => {
@@ -20,7 +19,9 @@ const DataTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://random-data-api.com/api/users/random_user?size=5');
+      const response = await axios.get(
+        "https://random-data-api.com/api/users/random_user?size=5"
+      );
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -54,34 +55,28 @@ const DataTable = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setFormData({
-      name: '',
-      email: '',
-      username: '',
-      address: '',
-      phone: '',
+      name: "",
+      email: "",
+      username: "",
     });
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Perform form validation here
-    // ...
 
-    // Add the new row to the table
     const newRow = {
       id: Date.now(),
       first_name: formData.name,
       email: formData.email,
       username: formData.username,
-      address: formData.address,
-      phone: formData.phone,
     };
     setFilteredData((prevData) => [...prevData, newRow]);
     handleCloseModal();
@@ -89,11 +84,13 @@ const DataTable = () => {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>Dodaj novi redak</button>
+      <button className="add-button" onClick={handleOpenModal}>
+        Dodaj novi redak
+      </button>
 
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-overlay">
+          <div className="modal">
             <span className="close" onClick={handleCloseModal}>
               &times;
             </span>
@@ -129,35 +126,21 @@ const DataTable = () => {
                 />
               </label>
 
-              <label>
-                Adresa:
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                />
-              </label>
-
-              <label>
-                Telefon:
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-              </label>
-
               <button type="submit">Spremi</button>
             </form>
           </div>
         </div>
       )}
-
-      <input type="text" placeholder="Pretraži po imenu" value={searchTerm} onChange={handleSearch} />
-
-      <table>
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Pretraži po imenu"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-input"
+        />
+      </div>
+      <table className="data-table">
         <thead>
           <tr>
             <th>Ime</th>
@@ -173,7 +156,12 @@ const DataTable = () => {
               <td>{item.email}</td>
               <td>{item.username}</td>
               <td>
-                <button onClick={() => handleDelete(item.id)}>Izbriši</button>
+                <button
+                  className="delete-button text-center"
+                  onClick={() => handleDelete(item.id)}
+                >
+                  Izbriši
+                </button>
               </td>
             </tr>
           ))}
