@@ -146,7 +146,7 @@ const DataTable = () => {
             <th>Ime</th>
             <th>Email</th>
             <th>Korisničko ime</th>
-            <th>Akcije</th>
+            <th>Brisanje</th>
           </tr>
         </thead>
         <tbody>
